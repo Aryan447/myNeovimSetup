@@ -67,3 +67,29 @@ autocmd('LspAttach', {
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
+
+-- curl
+--[[
+vim.api.nvim_create_autocmd("BufWritePost", {
+  pattern = { "*.js", "*.strudel" },
+  callback = function()
+    local file = vim.fn.expand("%:p")
+    vim.fn.jobstart({ "curl", "-s", "-X", "POST", "http://localhost:3000", "-d", "@" .. file }, {
+      stdout_buffered = true,
+      stderr_buffered = true,
+    })
+  end,
+})
+]]
+
+vim.api.nvim_set_keymap("n", "<leader>ss", "", {
+  noremap = true,
+  silent = true,
+  callback = function()
+    local file = vim.fn.expand("%:p")
+    vim.fn.jobstart({ "curl", "-s", "-X", "POST", "http://localhost:3000", "-d", "@" .. file }, {
+      stdout_buffered = true,
+      stderr_buffered = true,
+    })
+  end,
+})
