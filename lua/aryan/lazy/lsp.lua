@@ -32,7 +32,7 @@ return {
                 "ts_ls",
                 "pyright",
                 --"tailwindcss",
-                --"solargraph",
+                --"ruby-lsp",
             },
             handlers = {
                 function(server_name) -- default handler (optional)
