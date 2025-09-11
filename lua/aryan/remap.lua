@@ -19,7 +19,6 @@ vim.keymap.set("n", "<leader>Y", [["+Y]])
 
 vim.keymap.set({"n", "v"}, "<leader>d", [["_d]])
 
--- This is going to get me cancelled
 vim.keymap.set("i", "<C-c>", "<Esc>")
 
 vim.keymap.set("n", "Q", "<nop>")
@@ -40,7 +39,24 @@ vim.keymap.set(
     "oif err != nil {<CR>}<Esc>Oreturn err<Esc>"
 )
 
-vim.keymap.set("n", "<leader>vpp", "<cmd>e ~/.dotfiles/nvim/.config/nvim/lua/aryan/packer.lua<CR>");
+vim.keymap.set(
+    "n",
+    "<leader>ea",
+    "oassert.NoError(err, \"\")<Esc>F\";a"
+)
+
+vim.keymap.set(
+    "n",
+    "<leader>ef",
+    "oif err != nil {<CR>}<Esc>Olog.Fatalf(\"error: %s\\n\", err.Error())<Esc>jj"
+)
+
+vim.keymap.set(
+    "n",
+    "<leader>el",
+    "oif err != nil {<CR>}<Esc>O.logger.Error(\"error\", \"error\", err)<Esc>F.;i"
+)
+
 vim.keymap.set("n", "<leader>mr", "<cmd>CellularAutomaton make_it_rain<CR>");
 
 vim.keymap.set("n", "<leader><leader>", function()
