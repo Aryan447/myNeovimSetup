@@ -39,6 +39,7 @@ vim.keymap.set(
     "oif err != nil {<CR>}<Esc>Oreturn err<Esc>"
 )
 
+
 vim.keymap.set(
     "n",
     "<leader>ea",
@@ -56,6 +57,13 @@ vim.keymap.set(
     "<leader>el",
     "oif err != nil {<CR>}<Esc>O.logger.Error(\"error\", \"error\", err)<Esc>F.;i"
 )
+
+vim.keymap.set(
+    "n",
+    "<leader>cpp",
+    "o#include <iostream><CR>using namespace std; <CR> int main() {<CR>}<Esc>Oreturn 0;<Esc>"
+)
+
 
 vim.keymap.set("n", "<leader>mr", "<cmd>CellularAutomaton make_it_rain<CR>");
 

@@ -36,7 +36,6 @@ return {
             },
             handlers = {
                 function(server_name) -- default handler (optional)
-
                     require("lspconfig")[server_name].setup {
                         capabilities = capabilities
                     }
@@ -55,6 +54,35 @@ return {
                         }
                     }
                 end,
+
+                ["clangd"] = function()
+                    local lspconfig = require("lspconfig")
+                    local common = require("config.lsp.common-config")
+
+                    lspconfig.clangd.setup({
+                        cmd = {
+                            vim.fn.stdpath("data") .. "/lspinstall/cpp/clangd/bin/clangd",
+                            "--background-index",
+                            "--cross-file-rename",
+                            "--header-insertion=never",
+                        },
+                        on_attach = common.common_on_attach,
+                        capabilities = common.capabilities or capabilities,
+                        filetypes = { "c", "cpp", "h", "hpp", "objc" },
+                        root_dir = lspconfig.util.root_pattern(".git", "compile_flags.txt", "compile_commands.json"),
+                        handlers = {
+                            ["textDocument/publishDiagnostics"] = vim.lsp.with(
+                                vim.lsp.diagnostic.on_publish_diagnostics, {
+                                    virtual_text = true,
+                                    signs = true,
+                                    underline = true,
+                                    update_in_insert = false,
+                                }
+                            ),
+                        },
+                    })
+                end,
+
                 --[[
                 ["tailwindcss"] = function()
                     local lspconfig = require("lspconfig")
@@ -76,7 +104,7 @@ return {
                         },
                     })
                 end,
-                ]]--
+                ]] --
             }
         })
 
@@ -115,3 +143,4 @@ return {
         })
     end
 }
+
