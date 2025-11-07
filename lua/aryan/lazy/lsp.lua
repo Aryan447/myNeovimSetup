@@ -33,6 +33,8 @@ return {
                 "pyright",
                 --"tailwindcss",
                 --"ruby-lsp",
+                --"cland",
+                --"jdtls",
             },
             handlers = {
                 function(server_name) -- default handler (optional)
