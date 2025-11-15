@@ -34,7 +34,7 @@ return {
                 --"tailwindcss",
                 --"ruby-lsp",
                 --"cland",
-                --"jdtls",
+                "jdtls", -- enabled
             },
             handlers = {
                 function(server_name) -- default handler (optional)
@@ -57,9 +57,37 @@ return {
                     }
                 end,
 
+                ["jdtls"] = function()
+                    local jdtls = require("jdtls")
+                    local home = os.getenv("HOME")
+                    local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+
+                    -- workspace stored relative to your java_projects dir
+                    local workspace_dir = home .. "/dev/java_projects/.jdtls-workspace/" .. project_name
+
+                    -- create folder if it doesn't exist
+                    vim.fn.mkdir(workspace_dir, "p")
+
+                    local config = {
+                        cmd = { "jdtls", "-data", workspace_dir },
+                        root_dir = require("jdtls.setup").find_root({ ".git", "src", "bin" }) or vim.fn.getcwd(),
+                        capabilities = require("cmp_nvim_lsp").default_capabilities(),
+                        settings = {
+                            java = {
+                                eclipse = { downloadSources = true },
+                                configuration = { updateBuildConfiguration = "disabled" },
+                                autobuild = { enabled = false },
+                            },
+                        },
+                    }
+
+                    jdtls.start_or_attach(config)
+                end,
+
+
                 ["clangd"] = function()
                     local lspconfig = require("lspconfig")
-                    local common = require("config.lsp.common-config")
+                    -- local common = require("config.lsp.common-config") -- commented: optional external config
 
                     lspconfig.clangd.setup({
                         cmd = {
@@ -68,8 +96,8 @@ return {
                             "--cross-file-rename",
                             "--header-insertion=never",
                         },
-                        on_attach = common.common_on_attach,
-                        capabilities = common.capabilities or capabilities,
+                        -- on_attach = common.common_on_attach, -- removed since 'common' not defined
+                        capabilities = capabilities,
                         filetypes = { "c", "cpp", "h", "hpp", "objc" },
                         root_dir = lspconfig.util.root_pattern(".git", "compile_flags.txt", "compile_commands.json"),
                         handlers = {
@@ -145,4 +173,3 @@ return {
         })
     end
 }
-
