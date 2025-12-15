@@ -71,3 +71,7 @@ vim.keymap.set("n", "<leader><leader>", function()
     vim.cmd("so")
 end)
 
+vim.keymap.set("n", "<leader>lt", function()
+    vim.cmd [[ PlenaryBustedFile % ]]
+end)
+
