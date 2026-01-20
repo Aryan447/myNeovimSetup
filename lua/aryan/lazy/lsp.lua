@@ -31,8 +31,9 @@ return {
                 --"gopls",
                 "ts_ls",
                 "pyright",
-                --"tailwindcss",
-                --"ruby-lsp",
+                "tailwindcss",
+                "ruby_lsp",
+                "rubocop",
                 --"cland",
                 "jdtls", -- enabled
             },
@@ -56,6 +57,18 @@ return {
                         }
                     }
                 end,
+
+                ["ruby_lsp"] = function()
+                    require("lspconfig").ruby_lsp.setup({
+                        capabilities = capabilities,
+                        filetypes = { "ruby", "eruby" },
+                        init_options = {
+                            formatter = 'auto', -- Use Rubocop via Ruby LSP for formatting
+                            linters = { 'rubocop' },
+                        },
+                    })
+                end,
+
 
                 ["jdtls"] = function()
                     local jdtls = require("jdtls")
@@ -113,28 +126,14 @@ return {
                     })
                 end,
 
-                --[[
                 ["tailwindcss"] = function()
                     local lspconfig = require("lspconfig")
                     lspconfig.tailwindcss.setup({
                         capabilities = capabilities,
-                        filetypes = { "html", "css", "scss", "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte" },
-                        settings = {
-                            tailwindCSS = {
-                                experimental = {
-                                    classRegex = {
-                                        "tw`([^`]*)",
-                                        "tw=\"([^\"]*)",
-                                        "tw={\"([^\"}]*)",
-                                        "tw\\.\\w+`([^`]*)",
-                                        "tw\\(.*?\\)`([^`]*)",
-                                    },
-                                },
-                            },
-                        },
+                        filetypes = { "html", "css", "scss", "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "heex", "erb", "eruby"},
                     })
                 end,
-                ]] --
+
             }
         })
 

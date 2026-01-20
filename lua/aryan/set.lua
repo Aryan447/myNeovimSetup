@@ -31,3 +31,13 @@ vim.opt.updatetime = 50
 
 vim.opt.colorcolumn = ""
 
+-- Force 2-space indentation + 120 char line limit for Ruby/Rails
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "ruby", "eruby" },
+    callback = function()
+        vim.opt_local.tabstop = 2
+        vim.opt_local.softtabstop = 2
+        vim.opt_local.shiftwidth = 2
+        -- vim.opt_local.colorcolumn = "120" -- Shows a visual guide at 120 chars
+    end,
+})
