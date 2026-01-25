@@ -29,7 +29,7 @@ vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 50
 
-vim.opt.colorcolumn = ""
+vim.opt.colorcolumn = "80"
 
 -- Force 2-space indentation + 120 char line limit for Ruby/Rails
 vim.api.nvim_create_autocmd("FileType", {

@@ -8,9 +8,12 @@ return {
                 javascript = { "prettier" },
                 typescript = { "prettier" },
                 python = { "black" },
+                ruby = { "rubocop" },
                 go = { "gofmt" }
             }
         })
+        vim.keymap.set("n", "<leader>f", function()
+            require("conform").format({ bufnr = 0 })
+        end)
     end
 }
-
