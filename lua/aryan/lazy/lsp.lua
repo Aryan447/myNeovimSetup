@@ -50,10 +50,23 @@ return {
                         capabilities = capabilities,
                         settings = {
                             Lua = {
+                                runtime = {
+                                    version = 'LuaJIT'
+                                },
+                                diagnostics = {
+                                    globals = { 'vim' },
+                                },
+                                workspace = {
+                                    library = {
+                                        vim.env.VIMRUNTIME,
+                                    },
+                                    checkThirdParty = false,
+                                },
+                                telemetry = {
+                                    enable = false,
+                                },
                                 format = {
                                     enable = true,
-                                    -- Put format options here
-                                    -- NOTE: the value should be STRING!!
                                     defaultConfig = {
                                         indent_style = "space",
                                         indent_size = "2",
@@ -67,35 +80,136 @@ return {
                 ["ruby_lsp"] = function()
                     require("lspconfig").ruby_lsp.setup({
                         capabilities = capabilities,
-                        filetypes = { "ruby", "eruby" },
+                        cmd = { "bundle", "exec", "ruby-lsp" },
+                        filetypes = { "ruby", "eruby", "rakefile" },
                         init_options = {
-                            formatter = 'auto', -- Use Rubocop via Ruby LSP for formatting
+                            formatter = 'auto',
                             linters = { 'rubocop' },
+                            enabledFeatures = {
+                                "documentHighlights",
+                                "documentSymbols",
+                                "foldingRanges",
+                                "selectionRanges",
+                                "semanticHighlighting",
+                                "formatting",
+                                "codeActions",
+                                "diagnostics",
+                                "onTypeFormatting",
+                                "hover",
+                                "completion",
+                            },
+                            featuresConfiguration = {
+                                inlayHint = {
+                                    enableAll = true,
+                                },
+                            },
                         },
+                        settings = {},
                     })
                 end,
 
+                ["ts_ls"] = function()
+                    require("lspconfig").ts_ls.setup({
+                        capabilities = capabilities,
+                        filetypes = {
+                            "javascript",
+                            "javascriptreact",
+                            "typescript",
+                            "typescriptreact",
+                        },
+                        settings = {
+                            typescript = {
+                                inlayHints = {
+                                    includeInlayParameterNameHints = 'all',
+                                    includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                                    includeInlayFunctionParameterTypeHints = true,
+                                    includeInlayVariableTypeHints = true,
+                                    includeInlayPropertyDeclarationTypeHints = true,
+                                    includeInlayFunctionLikeReturnTypeHints = true,
+                                    includeInlayEnumMemberValueHints = true,
+                                }
+                            },
+                            javascript = {
+                                inlayHints = {
+                                    includeInlayParameterNameHints = 'all',
+                                    includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                                    includeInlayFunctionParameterTypeHints = true,
+                                    includeInlayVariableTypeHints = true,
+                                    includeInlayPropertyDeclarationTypeHints = true,
+                                    includeInlayFunctionLikeReturnTypeHints = true,
+                                    includeInlayEnumMemberValueHints = true,
+                                }
+                            }
+                        }
+                    })
+                end,
+
+                ["pyright"] = function()
+                    require("lspconfig").pyright.setup({
+                        capabilities = capabilities,
+                        settings = {
+                            python = {
+                                analysis = {
+                                    autoSearchPaths = true,
+                                    diagnosticMode = "workspace",
+                                    useLibraryCodeForTypes = true,
+                                    typeCheckingMode = "basic",
+                                }
+                            }
+                        }
+                    })
+                end,
 
                 ["jdtls"] = function()
                     local jdtls = require("jdtls")
                     local home = os.getenv("HOME")
                     local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
-
-                    -- workspace stored relative to your java_projects dir
                     local workspace_dir = home .. "/dev/java_projects/.jdtls-workspace/" .. project_name
 
-                    -- create folder if it doesn't exist
                     vim.fn.mkdir(workspace_dir, "p")
 
                     local config = {
                         cmd = { "jdtls", "-data", workspace_dir },
-                        root_dir = require("jdtls.setup").find_root({ ".git", "src", "bin" }) or vim.fn.getcwd(),
-                        capabilities = require("cmp_nvim_lsp").default_capabilities(),
+                        root_dir = require("jdtls.setup").find_root({ ".git", "src", "bin", "pom.xml", "build.gradle" }) or
+                        vim.fn.getcwd(),
+                        capabilities = capabilities,
                         settings = {
                             java = {
                                 eclipse = { downloadSources = true },
-                                configuration = { updateBuildConfiguration = "disabled" },
-                                autobuild = { enabled = false },
+                                configuration = { updateBuildConfiguration = "automatic" },
+                                maven = { downloadSources = true },
+                                implementationsCodeLens = { enabled = true },
+                                referencesCodeLens = { enabled = true },
+                                references = { includeDecompiledSources = true },
+                                format = {
+                                    enabled = true,
+                                },
+                            },
+                            signatureHelp = { enabled = true },
+                            completion = {
+                                favoriteStaticMembers = {
+                                    "org.hamcrest.MatcherAssert.assertThat",
+                                    "org.hamcrest.Matchers.*",
+                                    "org.hamcrest.CoreMatchers.*",
+                                    "org.junit.jupiter.api.Assertions.*",
+                                    "java.util.Objects.requireNonNull",
+                                    "java.util.Objects.requireNonNullElse",
+                                    "org.mockito.Mockito.*",
+                                },
+                            },
+                            contentProvider = { preferred = "fernflower" },
+                            extendedClientCapabilities = jdtls.extendedClientCapabilities,
+                            sources = {
+                                organizeImports = {
+                                    starThreshold = 9999,
+                                    staticStarThreshold = 9999,
+                                },
+                            },
+                            codeGeneration = {
+                                toString = {
+                                    template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
+                                },
+                                useBlocks = true,
                             },
                         },
                     }
@@ -103,31 +217,33 @@ return {
                     jdtls.start_or_attach(config)
                 end,
 
-
                 ["clangd"] = function()
                     local lspconfig = require("lspconfig")
-                    -- local common = require("config.lsp.common-config") -- commented: optional external config
-
                     lspconfig.clangd.setup({
                         cmd = {
-                            vim.fn.stdpath("data") .. "/lspinstall/cpp/clangd/bin/clangd",
+                            "clangd",
                             "--background-index",
-                            "--cross-file-rename",
-                            "--header-insertion=never",
+                            "--clang-tidy",
+                            "--header-insertion=iwyu",
+                            "--completion-style=detailed",
+                            "--function-arg-placeholders",
+                            "--fallback-style=llvm",
                         },
-                        -- on_attach = common.common_on_attach, -- removed since 'common' not defined
                         capabilities = capabilities,
-                        filetypes = { "c", "cpp", "h", "hpp", "objc" },
-                        root_dir = lspconfig.util.root_pattern(".git", "compile_flags.txt", "compile_commands.json"),
-                        handlers = {
-                            ["textDocument/publishDiagnostics"] = vim.lsp.with(
-                                vim.lsp.diagnostic.on_publish_diagnostics, {
-                                    virtual_text = true,
-                                    signs = true,
-                                    underline = true,
-                                    update_in_insert = false,
-                                }
-                            ),
+                        filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
+                        root_dir = lspconfig.util.root_pattern(
+                            '.clangd',
+                            '.clang-tidy',
+                            '.clang-format',
+                            'compile_commands.json',
+                            'compile_flags.txt',
+                            'configure.ac',
+                            '.git'
+                        ),
+                        init_options = {
+                            usePlaceholders = true,
+                            completeUnimported = true,
+                            clangdFileStatus = true,
                         },
                     })
                 end,
@@ -136,10 +252,62 @@ return {
                     local lspconfig = require("lspconfig")
                     lspconfig.tailwindcss.setup({
                         capabilities = capabilities,
-                        filetypes = { "html", "css", "scss", "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "heex", "erb", "eruby" },
+                        filetypes = {
+                            "html",
+                            "css",
+                            "scss",
+                            "javascript",
+                            "javascriptreact",
+                            "typescript",
+                            "typescriptreact",
+                            "vue",
+                            "svelte",
+                            "heex",
+                            "erb",
+                            "eruby",
+                        },
+                        settings = {
+                            tailwindCSS = {
+                                experimental = {
+                                    classRegex = {
+                                        "class:\\s*['\"]([^'\"]*)['\"]",
+                                    },
+                                },
+                            },
+                        },
                     })
                 end,
 
+                ["gopls"] = function()
+                    require("lspconfig").gopls.setup({
+                        capabilities = capabilities,
+                        settings = {
+                            gopls = {
+                                analyses = {
+                                    unusedparams = true,
+                                },
+                                staticcheck = true,
+                                gofumpt = true,
+                            },
+                        },
+                    })
+                end,
+
+                ["rust_analyzer"] = function()
+                    require("lspconfig").rust_analyzer.setup({
+                        capabilities = capabilities,
+                        settings = {
+                            ['rust-analyzer'] = {
+                                checkOnSave = {
+                                    command = "clippy",
+                                },
+                                cargo = {
+                                    allFeatures = true,
+                                },
+                            },
+                        },
+                    })
+                end,
             }
         })
 

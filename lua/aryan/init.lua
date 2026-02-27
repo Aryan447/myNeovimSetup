@@ -1,6 +1,5 @@
 require("aryan.set")
 require("aryan.remap")
-
 require("aryan.lazy_init")
 
 -- DO.not
@@ -47,6 +46,7 @@ autocmd({"BufWritePre"}, {
     command = [[%s/\s\+$//e]],
 })
 
+
 autocmd('LspAttach', {
     group = aryanGroup,
     callback = function(e)
@@ -67,17 +67,3 @@ autocmd('LspAttach', {
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
-
--- curl
---[[
-vim.api.nvim_create_autocmd("BufWritePost", {
-  pattern = { "*.js", "*.strudel" },
-  callback = function()
-    local file = vim.fn.expand("%:p")
-    vim.fn.jobstart({ "curl", "-s", "-X", "POST", "http://localhost:3000", "-d", "@" .. file }, {
-      stdout_buffered = true,
-      stderr_buffered = true,
-    })
-  end,
-})
-]]
