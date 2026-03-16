@@ -19,12 +19,5 @@ return {
                 },
             },
         })
-
-        vim.keymap.set("n", "<leader>f", function()
-            require("conform").format({
-                bufnr = 0,
-                lsp_fallback = true,
-            })
-        end)
     end,
 }

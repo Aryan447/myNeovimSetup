@@ -34,7 +34,7 @@ return {
                 "tailwindcss",
                 "ruby_lsp",
                 "rubocop",
-                --"cland",
+                "clangd",
                 "jdtls", -- enabled
             },
             handlers = {
@@ -171,7 +171,7 @@ return {
                     local config = {
                         cmd = { "jdtls", "-data", workspace_dir },
                         root_dir = require("jdtls.setup").find_root({ ".git", "src", "bin", "pom.xml", "build.gradle" }) or
-                        vim.fn.getcwd(),
+                            vim.fn.getcwd(),
                         capabilities = capabilities,
                         settings = {
                             java = {
