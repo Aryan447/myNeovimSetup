@@ -28,14 +28,14 @@ return {
             ensure_installed = {
                 "lua_ls",
                 --"rust_analyzer",
-                --"gopls",
+                -- "gopls",
                 "ts_ls",
                 "pyright",
                 "tailwindcss",
-                "ruby_lsp",
-                "rubocop",
+                -- "ruby_lsp",
+                -- "rubocop",
                 "clangd",
-                "jdtls", -- enabled
+                -- "jdtls",
             },
             handlers = {
                 function(server_name) -- default handler (optional)
