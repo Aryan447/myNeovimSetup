@@ -27,8 +27,8 @@ return {
         require("mason-lspconfig").setup({
             ensure_installed = {
                 "lua_ls",
-                --"rust_analyzer",
-                -- "gopls",
+                "rust_analyzer",
+                "gopls",
                 "ts_ls",
                 "pyright",
                 "tailwindcss",
@@ -138,22 +138,6 @@ return {
                                     includeInlayPropertyDeclarationTypeHints = true,
                                     includeInlayFunctionLikeReturnTypeHints = true,
                                     includeInlayEnumMemberValueHints = true,
-                                }
-                            }
-                        }
-                    })
-                end,
-
-                ["pyright"] = function()
-                    require("lspconfig").pyright.setup({
-                        capabilities = capabilities,
-                        settings = {
-                            python = {
-                                analysis = {
-                                    autoSearchPaths = true,
-                                    diagnosticMode = "workspace",
-                                    useLibraryCodeForTypes = true,
-                                    typeCheckingMode = "basic",
                                 }
                             }
                         }
@@ -304,6 +288,7 @@ return {
                                 cargo = {
                                     allFeatures = true,
                                 },
+                                procMacro = { enable = true },
                             },
                         },
                     })
