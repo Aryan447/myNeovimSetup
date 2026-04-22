@@ -287,6 +287,7 @@ return {
                                 },
                                 cargo = {
                                     allFeatures = true,
+                                    autoreload = true,
                                 },
                                 procMacro = { enable = true },
                             },
