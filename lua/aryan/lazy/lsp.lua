@@ -29,7 +29,8 @@ return {
                 "lua_ls",
                 "rust_analyzer",
                 "gopls",
-                "ts_ls",
+                -- "ts_ls",
+                "tsgo",
                 "pyright",
                 "tailwindcss",
                 -- "ruby_lsp",
@@ -216,13 +217,9 @@ return {
                         capabilities = capabilities,
                         filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
                         root_dir = lspconfig.util.root_pattern(
-                            '.clangd',
-                            '.clang-tidy',
-                            '.clang-format',
-                            'compile_commands.json',
-                            'compile_flags.txt',
-                            'configure.ac',
-                            '.git'
+                            '.clangd', '.clang-tidy', '.clang-format',
+                            'compile_commands.json', 'compile_flags.txt',
+                            'configure.ac', '.git'
                         ),
                         init_options = {
                             usePlaceholders = true,
